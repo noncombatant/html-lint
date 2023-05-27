@@ -1,4 +1,4 @@
-// Copyright 2023 by Chris Palmer.
+// Copyright 2023 by Chris Palmer, https://noncombatant.org/
 // SPDX-License-Identifier: Apache-2.0
 
 package main
