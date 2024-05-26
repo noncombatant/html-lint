@@ -1,5 +1,5 @@
-module html-lint
+module github.com/noncombatant/html-lint
 
-go 1.19
+go 1.22
 
-require golang.org/x/net v0.0.0-20220826154423-83b083e8dc8b
+require golang.org/x/net v0.25.0
