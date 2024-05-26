@@ -1,4 +1,4 @@
-module github.com/noncombatant/html-lint
+module github.com/noncombatant/html_lint
 
 go 1.22
 

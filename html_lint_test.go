@@ -1,7 +1,7 @@
 // Copyright 2023 by Chris Palmer, https://noncombatant.org/
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package html_lint
 
 import (
 	"strings"
@@ -53,7 +53,7 @@ func TestLintWidthAndHeight(t *testing.T) {
 `
 	expected := []string{
 		"<img> missing width",
-	  "<img> missing height",
+		"<img> missing height",
 	}
 	runTest(t, document, expected, 2)
 }
@@ -63,7 +63,7 @@ func TestLintAltText(t *testing.T) {
 <figure><img src="goat" width="0" height="0" loading="lazy"/>
 <figcaption>goat</figcaption></figure>
 `
-	expected := []string {
+	expected := []string{
 		"<img> missing alt",
 	}
 	runTest(t, document, expected, 1)

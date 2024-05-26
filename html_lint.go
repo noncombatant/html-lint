@@ -1,13 +1,11 @@
 // Copyright 2023 by Chris Palmer, https://noncombatant.org/
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package html_lint
 
 import (
-	"flag"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 	"time"
 
@@ -15,14 +13,7 @@ import (
 )
 
 const (
-	TimeFormat  = "_2 January 2006"
-	HelpMessage = `Analyzes HTML files for style, completeness, and overall deliciousness. 😋
-
-Usage:
-
-  html-lint [file [...]]
-
-If no files are given, analyzes the standard input.`
+	timeFormat = "_2 January 2006"
 )
 
 type Report struct {
@@ -133,9 +124,9 @@ func LintTimeFormatting(report *Report, node *html.Node, pathname string) {
 		if c == nil || c.Type != html.TextNode {
 			report.Println(pathname, "<time> needs exactly 1 text child")
 		} else {
-			_, e := time.Parse(TimeFormat, c.Data)
+			_, e := time.Parse(timeFormat, c.Data)
 			if e != nil {
-				report.Println(pathname, "<time> child", c.Data, "does not have correct format", TimeFormat)
+				report.Println(pathname, "<time> child", c.Data, "does not have correct format", timeFormat)
 			}
 		}
 	}
@@ -213,43 +204,4 @@ func LintNesting(report *Report, reader io.Reader, pathname string) {
 	if len(stack) != 0 {
 		report.Println(pathname, "Unclosed tags", stack)
 	}
-}
-
-func main() {
-	flag.Usage = func() {
-		fmt.Fprintln(flag.CommandLine.Output(), HelpMessage)
-	}
-	flag.Parse()
-
-	report := Report{Writer: os.Stderr, ErrorCount: 0}
-
-	for _, pathname := range flag.Args() {
-		reader, e := os.Open(pathname)
-		if e != nil {
-			report.Println(e)
-			continue
-		}
-		defer reader.Close()
-
-		document, e := html.Parse(reader)
-		if e != nil {
-			report.Println(e)
-			continue
-		}
-		Lint(&report, document, pathname)
-		if _, e := reader.Seek(0, 0); e != nil {
-			report.Println(e)
-			continue
-		}
-		LintNesting(&report, reader, pathname)
-	}
-	if len(flag.Args()) == 0 {
-		document, e := html.Parse(os.Stdin)
-		if e != nil {
-			report.Println(e)
-			os.Exit(report.ErrorCount)
-		}
-		Lint(&report, document, "<stdin>")
-	}
-	os.Exit(report.ErrorCount)
 }
